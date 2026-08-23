@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "mesa & brasa — Faça seu pedido",
+  title: "Fazer Pedido",
   description: "Escolha seus pratos, pague via Pix e envie o comprovante pelo WhatsApp.",
   icons: {
     icon: "/favicon.svg",
