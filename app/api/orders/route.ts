@@ -22,7 +22,23 @@ export async function POST(request: Request) {
     const body = await request.json() as { customerName?: string; items?: Array<{ name?: string; quantity?: number; price?: number }>; totalCents?: number; paymentMethod?: "cash" | "pix"; changeForCents?: number | null; receiptText?: string; receiptLink?: string };
     const totalCents = body.totalCents;
     if (!body.customerName?.trim() || !Array.isArray(body.items) || !body.items.length || typeof totalCents !== "number" || !Number.isInteger(totalCents) || totalCents <= 0) return Response.json({ error: "Dados do pedido inválidos." }, { status: 400 });
-    const reference = `CCB-${Date.now().toString(36).toUpperCase()}`;
+    let stockSync = "not_configured";
+    let stockOrderReference = "";
+    const stockWebhook = process.env.STOCK_WEBHOOK_URL;
+    if (stockWebhook) {
+      const stockResponse = await fetch(stockWebhook, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const stockData = await stockResponse.json() as { success?: boolean; error?: string; order?: { reference?: string } };
+      if (!stockResponse.ok || !stockData.success) {
+        return Response.json({ error: stockData.error || "Não foi possível validar o estoque disponível." }, { status: 409 });
+      }
+      stockSync = "sent";
+      stockOrderReference = stockData.order?.reference || "";
+    }
+    const reference = stockOrderReference || `CCB-${Date.now().toString(36).toUpperCase()}`;
     const values = { reference, customerName: body.customerName.trim(), itemsJson: JSON.stringify(body.items), totalCents, paymentStatus: "pending", pixStatus: "not_configured", receiptText: body.receiptText?.trim() || null, receiptLink: body.receiptLink?.trim() || null, createdAt: new Date().toISOString() };
     let order: LocalOrder;
     try {
@@ -50,7 +66,7 @@ export async function POST(request: Request) {
         sheetSync = syncResponse.ok ? "sent" : "error";
       } catch { sheetSync = "error"; }
     }
-    return Response.json({ order, emailStatus, sheetSync, pix: { configured: Boolean(process.env.PIX_PROVIDER), status: "not_configured", message: "Configure PIX_PROVIDER e as credenciais do provedor para gerar o QR Code dinâmico." } }, { status: 201 });
+    return Response.json({ order, emailStatus, sheetSync, stockSync, pix: { configured: Boolean(process.env.PIX_PROVIDER), status: "not_configured", message: "Configure PIX_PROVIDER e as credenciais do provedor para gerar o QR Code dinâmico." } }, { status: 201 });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Database unavailable" }, { status: 503 });
   }
