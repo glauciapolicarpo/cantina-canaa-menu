@@ -20,9 +20,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json() as { customerName?: string; items?: Array<{ name?: string; quantity?: number; price?: number }>; totalCents?: number; paymentMethod?: "cash" | "pix"; changeForCents?: number | null; receiptText?: string; receiptLink?: string };
-    if (!body.customerName?.trim() || !Array.isArray(body.items) || !body.items.length || !Number.isInteger(body.totalCents) || body.totalCents <= 0) return Response.json({ error: "Dados do pedido inválidos." }, { status: 400 });
+    const totalCents = body.totalCents;
+    if (!body.customerName?.trim() || !Array.isArray(body.items) || !body.items.length || !Number.isInteger(totalCents) || totalCents <= 0) return Response.json({ error: "Dados do pedido inválidos." }, { status: 400 });
     const reference = `CCB-${Date.now().toString(36).toUpperCase()}`;
-    const values = { reference, customerName: body.customerName.trim(), itemsJson: JSON.stringify(body.items), totalCents: body.totalCents, paymentStatus: "pending", pixStatus: "not_configured", receiptText: body.receiptText?.trim() || null, receiptLink: body.receiptLink?.trim() || null, createdAt: new Date().toISOString() };
+    const values = { reference, customerName: body.customerName.trim(), itemsJson: JSON.stringify(body.items), totalCents, paymentStatus: "pending", pixStatus: "not_configured", receiptText: body.receiptText?.trim() || null, receiptLink: body.receiptLink?.trim() || null, createdAt: new Date().toISOString() };
     let order: LocalOrder;
     try {
       const db = getDb();
