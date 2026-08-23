@@ -26,3 +26,18 @@ body{background:var(--cream);color:var(--ink)}.app-shell{max-width:780px;padding
 .payment-screen:has(.form-card){position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:#3e302899;padding:20px;overflow:auto}.payment-screen:has(.form-card) .form-card{width:min(100%,760px);max-height:calc(100vh - 40px);overflow:auto;margin:0;box-shadow:0 20px 60px #3e302855}.name-hint{font-size:28px;line-height:1.1}
 
 .whatsapp{border:3px solid #82d99a;animation:whatsapp-pulse 1.8s ease-in-out infinite}@keyframes whatsapp-pulse{0%,100%{box-shadow:0 0 0 0 #82d99a88}50%{box-shadow:0 0 0 6px #82d99a33}}
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.45rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -0.12rem;
+  animation: loading-spin 0.7s linear infinite;
+}
+
+@keyframes loading-spin {
+  to { transform: rotate(360deg); }
+}
