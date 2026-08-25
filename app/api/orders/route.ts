@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     }
     let sheetSync = "not_configured";
     const sheetWebhook = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
-    if (sheetWebhook) {
+    if (sheetWebhook && stockSync !== "sent") {
       try {
         const payload = { referencia: order.reference, data: order.createdAt, nome: order.customerName, pedido: body.items, valor_total: order.totalCents / 100, metodo_pagamento: method, valor_pago_dinheiro: method === "À vista" ? changeForCents / 100 : "", troco_a_devolver: method === "À vista" ? changeCents / 100 : "", status_pagamento: "Pendente" };
         const syncResponse = await fetch(sheetWebhook, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
