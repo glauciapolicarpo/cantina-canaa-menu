@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 const products = [{ id: "coxinha", name: "Coxinha", price: 8, emoji: "🥟" }, { id: "risoles", name: "Risoles", price: 8, emoji: "🥠" }, { id: "bolo", name: "Bolo", price: 8, emoji: "🍰" }, { id: "pastel de carne", name: "Pastel de carne", price: 8, emoji: "🥟" }, { id: "pastel de queijo", name: "Pastel de queijo", price: 8, emoji: "🥟" }, { id: "pastel de frango com catupiry", name: "Pastel de frango com catupiry", price: 8, emoji: "🥟" }, { id: "pastel de carne com queijo", name: "Pastel de carne com queijo", price: 8, emoji: "🥟" }, { id: "bauru", name: "Bauru", price: 8, emoji: "🥪" }, { id: "empada de frango", name: "Empada de frango", price: 8, emoji: "🥧" }, { id: "empada de presunto, queijo e tomate", name: "Empada de presunto, queijo e tomate", price: 8, emoji: "🥧" }, { id: "refri", name: "Refri", price: 2, emoji: "🥤" }];
-const pixEmail = "criatividadeedesigner@gmail.com";
+const pixEmail = "canaaparatodos@gmail.com";
 const money = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const whatsappNumber = "5511979673253";
 const pixField = (id: string, value: string) => id + String(value.length).padStart(2, "0") + value;
@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => { fetch("/api/stock", { cache: "no-store" }).then(response => response.ok ? response.json() : Promise.reject(new Error("stock"))).then(data => setInventory((current) => ({ ...current, ...(data.estoque || {}) }))).catch(() => undefined); }, []);
   const selected = useMemo(() => products.filter(p => (quantities[p.id] ?? 0) > 0).map(p => ({ ...p, quantity: quantities[p.id] })), [quantities]); const total = selected.reduce((sum, item) => sum + item.price * item.quantity, 0); const count = selected.reduce((sum, item) => sum + item.quantity, 0); const changeAmount = paymentMethod === "cash" && changeFor ? Math.max(0, Number(changeFor) - total) : 0;
   const change = (id: string, amount: number) => setQuantities(q => ({ ...q, [id]: Math.max(0, Math.min(inventory[id] ?? 0, (q[id] ?? 0) + amount)) }));
-  const adminLogin = (event: React.FormEvent) => { event.preventDefault(); if (adminEmail.toLowerCase() === "criatividadeedesigner@gmail.com" && adminPassword === "love") { setAdminAuthenticated(true); setAdminError(""); } else setAdminError("E-mail ou senha incorretos."); };
+  const adminLogin = (event: React.FormEvent) => { event.preventDefault(); if (adminEmail.toLowerCase() === "canaaparatodos@gmail.com" && adminPassword === "love") { setAdminAuthenticated(true); setAdminError(""); } else setAdminError("E-mail ou senha incorretos."); };
   const adjustStock = (id: string, amount: number) => setInventory(stock => ({ ...stock, [id]: Math.max(0, (stock[id] ?? 0) + amount) }));
   const sendToWhatsApp = () => { const summary = selected.map(i => `${i.quantity}x ${i.name}`).join(", "); const message = `Olá! Pedido ${reference} de ${name}. Itens: ${summary}. Total: ${money(total)}. Comprovante: ${receiptLink || receipt || "vou anexar o arquivo diretamente nesta conversa"}.`; window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank"); };
   const qrUrl = reference ? `https://quickchart.io/qr?size=240&text=${encodeURIComponent(pixPayload(total, reference))}` : "";
