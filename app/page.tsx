@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 const products = [{ id: "coxinha", name: "Coxinha", price: 8, emoji: "🥟" }, { id: "risoles", name: "Risoles", price: 8, emoji: "🥠" }, { id: "bolo", name: "Bolo", price: 8, emoji: "🍰" }, { id: "pastel de carne", name: "Pastel de carne", price: 8, emoji: "🥟" }, { id: "pastel de queijo", name: "Pastel de queijo", price: 8, emoji: "🥟" }, { id: "pastel de frango com catupiry", name: "Pastel de frango com catupiry", price: 8, emoji: "🥟" }, { id: "pastel de carne com queijo", name: "Pastel de carne com queijo", price: 8, emoji: "🥟" }, { id: "bauru", name: "Bauru", price: 8, emoji: "🥪" }, { id: "empada de frango", name: "Empada de frango", price: 8, emoji: "🥧" }, { id: "empada de presunto, queijo e tomate", name: "Empada de presunto, queijo e tomate", price: 8, emoji: "🥧" }, { id: "refri", name: "Refri", price: 2, emoji: "🥤" }];
-const pixEmail = "criatividadeedesigner@gmail.com";
+const pixEmail = "canaaparatodos@gmail.com";
 const money = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const whatsappNumber = "5511979673253";
 const pixField = (id: string, value: string) => id + String(value.length).padStart(2, "0") + value;
