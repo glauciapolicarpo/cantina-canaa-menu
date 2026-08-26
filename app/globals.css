@@ -41,3 +41,37 @@ body{background:var(--cream);color:var(--ink)}.app-shell{max-width:780px;padding
 @keyframes loading-spin {
   to { transform: rotate(360deg); }
 }
+
+.copy-pix {
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 1px solid #e3bd3f;
+  border-radius: 12px;
+  background: #ffe27a;
+  color: #5c4510;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.copy-pix:hover { background: #ffdc62; }
+
+.pix-copy-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 14px 0 16px;
+  padding: 14px 54px 14px 16px;
+  border: 1px solid #e3bd3f;
+  border-radius: 12px;
+  background: #ffe27a;
+  color: #5c4510;
+  box-sizing: border-box;
+}
+.pix-copy-label { display: none; }
+.pix-copy-box code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 15px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.copy-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border: 0; border-radius: 9px; background: rgba(255,255,255,.58); color: #5c4510; cursor: pointer; font-size: 22px; line-height: 1; }
+.copy-icon:hover, .copy-icon:focus-visible { background: #fff5bd; outline: 2px solid #b58b12; }
+.copy-icon[title] { position: absolute; }
