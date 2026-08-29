@@ -6,6 +6,7 @@
 .payment-options{border:0;padding:0;margin:22px 0}.payment-options legend{font-size:15px;font-weight:700;margin-bottom:10px}.payment-option{display:inline-flex!important;align-items:center;gap:8px;margin:0 18px 0 0!important;font-size:14px!important;font-weight:400!important}.payment-option input{width:16px!important;margin:0!important}.cash-note{border:1px solid var(--line);padding:25px;color:var(--muted);font-size:13px}
 
 .change-result{display:block;margin-top:8px;color:#59610b;font-size:13px}.change-result strong{font-size:16px}
+.cash-highlight{color:#b42323;font-weight:800;text-transform:uppercase}
 
 .stock-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:35px}.stock-card{background:var(--paper);padding:22px}.stock-card h3{font-size:22px}.stock-card p{font-size:11px;color:var(--muted)}.stock-card strong{font-size:15px}.stock-actions{display:flex;gap:8px;margin-top:18px}.stock-actions button{border:1px solid var(--ink);background:transparent;border-radius:50%;width:32px;height:32px;font-size:18px}.admin-heading{display:flex;justify-content:space-between;align-items:end}@media(max-width:800px){.stock-grid{grid-template-columns:repeat(2,1fr)}}
 
