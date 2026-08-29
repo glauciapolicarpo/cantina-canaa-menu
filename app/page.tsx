@@ -207,7 +207,7 @@ export default function Home() {
 {paymentMethod === "pix" ? <><h2>Pix<br/>
 <em>dinâmico.</em>
 </h2>
-<p>O pedido foi reservado com sucesso. Este QR Code Pix contém a chave para o pagamento. Se não recebermos o pagamento em 24h sua reserva será cancelada automaticamente e os itens do pedido voltarão para o menu.</p>
+<p>O pedido foi reservado com sucesso. Este QR Code Pix contém a chave para o pagamento. SE NÃO RECEBERMOS O PAGAMENTO E COMPROVANTE em 24h sua reserva será CANCELADA automaticamente e os itens do pedido voltarão para o menu.</p>
   </> : <><h2>Pagamento<br/>
 <em>à vista.</em>
 </h2>
