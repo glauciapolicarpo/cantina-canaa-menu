@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 
-const products = [{ id: "coxinha", name: "Coxinha", price: 8, emoji: "🥟" }, { id: "risoles", name: "Risoles", price: 8, emoji: "🥠" }, { id: "bolo", name: "Bolo", price: 8, emoji: "🍰" }, { id: "mousse de maracujá", name: "Mousse de maracujá", price: 8, emoji: "🍮" }, { id: "pastel de carne", name: "Pastel de carne", price: 8, emoji: "🥟" }, { id: "pastel de queijo", name: "Pastel de queijo", price: 8, emoji: "🥟" }, { id: "pastel de frango com catupiry", name: "Pastel de frango com catupiry", price: 8, emoji: "🥟" }, { id: "pastel de carne com queijo", name: "Pastel de carne com queijo", price: 8, emoji: "🥟" }, { id: "bauru", name: "Bauru", price: 8, emoji: "🥪" }, { id: "empada de frango", name: "Empada de frango", price: 8, emoji: "🥧" }, { id: "empada de presunto, queijo e tomate", name: "Empada de presunto, queijo e tomate", price: 8, emoji: "🥧" }, { id: "refri", name: "Refri", price: 2, emoji: "🥤" }];
+const products = [ { id: "mousse de maracujá", name: "Mousse de maracujá", price: 8, emoji: "🍮" }, { id: "bolo", name: "Bolo", price: 8, emoji: "🍰" },  { id: "risoles", name: "Risoles", price: 8, emoji: "🥠" },  { id: "coxinha", name: "Coxinha", price: 8, emoji: "🥟" }, { id: "pastel de carne", name: "Pastel de carne", price: 8, emoji: "🥟" }, { id: "pastel de queijo", name: "Pastel de queijo", price: 8, emoji: "🥟" }, { id: "pastel de frango com catupiry", name: "Pastel de frango com catupiry", price: 8, emoji: "🥟" }, { id: "pastel de carne com queijo", name: "Pastel de carne com queijo", price: 8, emoji: "🥟" }, { id: "bauru", name: "Bauru", price: 8, emoji: "🥪" }, { id: "empada de frango", name: "Empada de frango", price: 8, emoji: "🥧" }, { id: "empada de presunto, queijo e tomate", name: "Empada de presunto, queijo e tomate", price: 8, emoji: "🥧" }, { id: "refri", name: "Refri", price: 2, emoji: "🥤" }];
 const pixEmail = "canaaparatodos@gmail.com";
 const money = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const whatsappNumber = "5511979673253";
@@ -134,7 +134,7 @@ export default function Home() {
 </header>{step === "menu" && <>
 <section className="hero">
 <div>
-<p className="eyebrow accent">Lanches e doces · preço fácil</p>
+<p className="eyebrow accent">Lanches e doces · Compra fácil</p>
 <h2>MENU - FAÇA SEU PEDIDO<br/>
 <em>PEDIDO.</em>
 </h2>
@@ -170,7 +170,7 @@ export default function Home() {
 <aside className="cart-card">
 <div className="cart-header">
 <div>
-<p className="eyebrow">Sua sacola</p>
+<p className="eyebrow">SUA SACOLINHA</p>
 <h3>{count} {count === 1 ? "item" : "itens"}</h3>
 </div>
 <span className="cart-dot">{count}</span>
