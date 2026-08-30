@@ -227,7 +227,7 @@ export default function Home() {
 <strong>{money(total)}</strong>
 <p>Confirme seu pagamento para retirar seu pedido.</p>
 </div>
-<button type="button" className={`pix-copy-cta ${pixCopied ? "copied" : ""}`} onClick={copyPixValue} aria-live="polite">{pixCopied ? "CHAVE PIX COPIADA ✓" : "CLIQUE AQUI E COPIE A CHAVE PIX PARA PAGAMENTO"}</button>
+<button type="button" className={`pix-copy-cta ${pixCopied ? "copied" : ""}`} onClick={copyPixValue} aria-live="polite">{pixCopied ? "CHAVE PIX COPIADA ✓" : "CLIQUE AQUI E COPIE A CHAVE PIX PARA PAGAMENTO NO SEU BANCO"}</button>
 <div className="pix-copy-divider" aria-hidden="true"><span>⧉</span></div>
 <strong className="pix-key-value">{pixEmail}</strong>
 <p className="pix-bank-instruction">Abra o app do seu banco, cole a chave e faça o pagamento no valor do pedido.</p>
