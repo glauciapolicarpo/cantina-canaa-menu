@@ -135,7 +135,7 @@ export default function Home() {
 <section className="hero">
 <div>
 <p className="eyebrow accent">Lanches e doces · preço fácil</p>
-<h2>FAÇA SEU<br/>
+<h2>MENU - FAÇA SEU PEDIDO<br/>
 <em>PEDIDO.</em>
 </h2>
 <p className="hero-copy">Escolha a quantidade, confira o total e pague via Pix.</p>
