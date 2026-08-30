@@ -157,7 +157,7 @@ export default function Home() {
 <div className="item-info">
 <span className="item-category">Por unidade</span>
 <h4>{p.name} {p.id === "refri" && <small className="discount">preço menor</small>}</h4>
-<p>{p.id === "refri" ? "Lata 350 ml" : "R$ 6,00 por unidade"}</p>
+<p>{p.id === "refri" ? "Copo 250 ml" : `${money(p.price)} por unidade`}</p>
 <strong>{money(p.price)}</strong>
 </div>
 <div className="qty product-qty">
