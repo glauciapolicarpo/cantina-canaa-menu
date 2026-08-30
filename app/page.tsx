@@ -232,8 +232,8 @@ export default function Home() {
 <strong className="pix-key-value">{pixEmail}</strong>
 <p className="pix-bank-instruction">Abra o app do seu banco, cole a chave e faça o pagamento no valor do pedido.</p>
 <div className="pix-reference">Pix no valor de {money(total)}<br/>referência: {reference}</div>
-<button type="button" className="whatsapp pix-whatsapp" onClick={sendToWhatsApp}>CLIQUE AQUI E ENVIE O COMPROVANTE DE PAGAMENTO</button>
-<p className="receipt-warning pix-warning">APÓS O PAGAMENTO VIA PIX, ENVIE O COMPROVANTE CLICANDO NO BOTÃO VERDE, QUE TE DIRECIONA PARA NOSSO NÚMERO DE WHATSAPP.</p>
+<button type="button" className="whatsapp pix-whatsapp" onClick={sendToWhatsApp}>DEPOIS CLIQUE AQUI E ENVIE O COMPROVANTE DE PAGAMENTO</button>
+<p className="receipt-warning pix-warning">APÓS O PAGAMENTO VIA PIX, ENVIE O COMPROVANTE CLICANDO NO BOTÃO VERDE, QUE TE DIRECIONA O WHATSAPP.</p>
 <small className="whatsapp-hint pix-whatsapp-hint">Ao abrir, anexe o comprovante manualmente pelo clipe.</small>
 </div> : <div className="payment-card cash-payment-card">
 <div>
