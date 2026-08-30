@@ -206,6 +206,16 @@ export default function Home() {
 </label>
 <fieldset className="payment-options">
 <legend>Escolha a forma de pagamento</legend>
+  <label className="payment-option">
+    <input
+      type="radio"
+      name="paymentMethod"
+      value="cash"
+      checked={paymentMethod === "cash"}
+      onChange={() => setPaymentMethod("cash")}
+    />
+    À vista
+  </label>
 <label className="payment-option">
 <input type="radio" name="paymentMethod" value="pix" checked={paymentMethod === "pix"} onChange={() => setPaymentMethod("pix")} /> Pix</label>
 </fieldset>{paymentMethod === "cash" && <label>Precisa de troco para quanto?<input type="number" min={total} step="0.01" value={changeFor} onChange={e => setChangeFor(e.target.value)} placeholder={`Ex.: ${money(total + 10)}`} required />
