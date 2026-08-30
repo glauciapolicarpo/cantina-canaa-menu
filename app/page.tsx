@@ -10,17 +10,34 @@ function crc16(value: string) { let crc = 0xffff; for (let i = 0; i < value.leng
 function pixPayload(amount: number, reference: string) { const merchant = pixField("00", "br.gov.bcb.pix") + pixField("01", pixEmail); const txid = reference.replace(/[^a-zA-Z0-9]/g, "").slice(0, 25) || "PEDIDO"; const payload = pixField("00", "01") + pixField("26", merchant) + pixField("52", "0000") + pixField("53", "986") + pixField("54", amount.toFixed(2)) + pixField("58", "BR") + pixField("59", "CANTINA CANAA") + pixField("60", "SAO PAULO") + pixField("62", pixField("05", txid)) + "6304"; return payload + crc16(payload); }
 
 export default function Home() {
-  const [quantities, setQuantities] = useState<Record<string, number>>({}); const [inventory, setInventory] = useState<Record<string, number>>({ salgado: 20, bolo: 20, doce: 20, refri: 20 }); const [adminEmail, setAdminEmail] = useState(""); const [adminPassword, setAdminPassword] = useState(""); const [adminAuthenticated, setAdminAuthenticated] = useState(false); const [adminError, setAdminError] = useState(""); const [step, setStep] = useState<"menu" | "receipt" | "payment" | "admin">("menu"); const [name, setName] = useState(""); const [changeFor, setChangeFor] = useState(""); const [paymentMethod, setPaymentMethod] = useState<"cash" | "pix">("pix"); const [receipt, setReceipt] = useState(""); const [receiptLink, setReceiptLink] = useState(""); const [reference, setReference] = useState(""); const [error, setError] = useState(""); const [isSubmitting, setIsSubmitting] = useState(false);
+  const [quantities, setQuantities] = useState<Record<string, number>>({}); const [inventory, setInventory] = useState<Record<string, number>>({ salgado: 20, bolo: 20, doce: 20, refri: 20 }); const [adminEmail, setAdminEmail] = useState(""); const [adminPassword, setAdminPassword] = useState(""); const [adminAuthenticated, setAdminAuthenticated] = useState(false); const [adminError, setAdminError] = useState(""); const [step, setStep] = useState<"menu" | "receipt" | "payment" | "admin">("menu"); const [name, setName] = useState(""); const [changeFor, setChangeFor] = useState(""); const [paymentMethod, setPaymentMethod] = useState<"cash" | "pix">("pix"); const [receipt, setReceipt] = useState(""); const [receiptLink, setReceiptLink] = useState(""); const [reference, setReference] = useState(""); const [error, setError] = useState(""); const [isSubmitting, setIsSubmitting] = useState(false); const [pixCopied, setPixCopied] = useState(false);
   useEffect(() => { fetch("/api/stock", { cache: "no-store" }).then(response => response.ok ? response.json() : Promise.reject(new Error("stock"))).then(data => setInventory((current) => ({ ...current, ...(data.estoque || {}) }))).catch(() => undefined); }, []);
   const selected = useMemo(() => products.filter(p => (quantities[p.id] ?? 0) > 0).map(p => ({ ...p, quantity: quantities[p.id] })), [quantities]); const total = selected.reduce((sum, item) => sum + item.price * item.quantity, 0); const count = selected.reduce((sum, item) => sum + item.quantity, 0); const changeAmount = paymentMethod === "cash" && changeFor ? Math.max(0, Number(changeFor) - total) : 0;
   const change = (id: string, amount: number) => setQuantities(q => ({ ...q, [id]: Math.max(0, Math.min(inventory[id] ?? 0, (q[id] ?? 0) + amount)) }));
   const adminLogin = (event: React.FormEvent) => { event.preventDefault(); if (adminEmail.toLowerCase() === "criatividadeedesigner@gmail.com" && adminPassword === "love") { setAdminAuthenticated(true); setAdminError(""); } else setAdminError("E-mail ou senha incorretos."); };
   const adjustStock = (id: string, amount: number) => setInventory(stock => ({ ...stock, [id]: Math.max(0, (stock[id] ?? 0) + amount) }));
-  const sendToWhatsApp = () => { const summary = selected.map(i => `${i.quantity}x ${i.name}`).join(", "); const message = `Olá! Pedido ${reference} de ${name}. Itens: ${summary}. Total: ${money(total)}. Comprovante: ${receiptLink || receipt || "vou anexar o arquivo diretamente nesta conversa"}.`; window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank"); };
+  const sendToWhatsApp = () => { const summary = selected.map(i => `${i.quantity}x ${i.name}`).join(", "); const message = paymentMethod === "pix" ? `Olá! Estou enviando o comprovante do pedido ${reference}. Cliente: ${name}. Itens: ${summary}. Total: ${money(total)}.` : `Olá! Pedido ${reference} de ${name}. Itens: ${summary}. Total: ${money(total)}. Pagamento à vista.`; window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank"); };
   const qrUrl = reference ? `https://quickchart.io/qr?size=240&text=${encodeURIComponent(pixPayload(total, reference))}` : "";
   const submitText = isSubmitting ? "AGUARDE, REGISTRANDO PEDIDO..." : "REGISTRAR PEDIDO E PAGAR";
   const submitIcon = isSubmitting ? "" : "→";
   const changeMessage = changeFor && Number(changeFor) >= total ? `Você vai receber: ${money(changeAmount)} de troco` : "";
+  const pixCopyValue = pixEmail;
+  const copyPixValue = async () => {
+    try {
+      await navigator.clipboard.writeText(pixCopyValue);
+    } catch {
+      const temporaryInput = document.createElement("textarea");
+      temporaryInput.value = pixCopyValue;
+      temporaryInput.style.position = "fixed";
+      temporaryInput.style.opacity = "0";
+      document.body.appendChild(temporaryInput);
+      temporaryInput.select();
+      document.execCommand("copy");
+      temporaryInput.remove();
+    }
+    setPixCopied(true);
+    window.setTimeout(() => setPixCopied(false), 2400);
+  };
   async function createOrder() { setError(""); if (!name.trim()) return setError("Informe seu nome para identificar o pedido."); if (paymentMethod === "cash" && (!changeFor || Number(changeFor) < total)) return setError("Informe um valor de troco maior ou igual ao total do pedido."); setIsSubmitting(true); try { const response = await fetch("/api/orders", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ customerName: name, items: selected, totalCents: total * 100, paymentMethod, changeForCents: paymentMethod === "cash" ? Math.round(Number(changeFor) * 100) : null, receiptText: receipt, receiptLink }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Não foi possível registrar o pedido."); setReference(data.order.reference); setStep("payment"); } catch (e) { setIsSubmitting(false); setError(e instanceof Error ? e.message : "Não foi possível registrar o pedido."); } }
   if (step === "admin" && !adminAuthenticated) return <main className="app-shell">
 <header className="topbar">
@@ -140,7 +157,7 @@ export default function Home() {
 <div className="item-info">
 <span className="item-category">Por unidade</span>
 <h4>{p.name} {p.id === "refri" && <small className="discount">preço menor</small>}</h4>
-<p>{p.id === "refri" ? "Copo 250 ml" : "R$ 8,00 por unidade"}</p>
+<p>{p.id === "refri" ? "Lata 350 ml" : "R$ 6,00 por unidade"}</p>
 <strong>{money(p.price)}</strong>
 </div>
 <div className="qty product-qty">
@@ -200,42 +217,39 @@ export default function Home() {
 </button>
 </form>
 </div>
-</section>}{step === "payment" && <section className="payment-screen">
-<div className="payment-card">
+</section>}{step === "payment" && <section className={`payment-screen ${paymentMethod === "pix" ? "pix-payment-screen" : ""}`}>
+{paymentMethod === "pix" ? <div className="payment-card pix-payment-card">
+<p className="eyebrow accent pix-order-id">Pedido {reference}</p>
+<h2>Pagamento Pix</h2>
+<p className="pix-intro">O pedido foi reservado com sucesso. Copie a chave Pix para realizar o pagamento. Se não recebermos o pagamento em 24h, sua reserva será cancelada automaticamente e os itens do pedido voltarão para o menu.</p>
+<div className="pix-total-block">
+<span>Total do pedido</span>
+<strong>{money(total)}</strong>
+<p>Confirme seu pagamento para retirar seu pedido.</p>
+</div>
+<button type="button" className={`pix-copy-cta ${pixCopied ? "copied" : ""}`} onClick={copyPixValue} aria-live="polite">{pixCopied ? "CHAVE PIX COPIADA ✓" : "CLIQUE AQUI E COPIE A CHAVE PIX PARA PAGAMENTO"}</button>
+<div className="pix-copy-divider" aria-hidden="true"><span>⧉</span></div>
+<strong className="pix-key-value">{pixEmail}</strong>
+<p className="pix-bank-instruction">Abra o app do seu banco, cole a chave e faça o pagamento no valor do pedido.</p>
+<div className="pix-reference">Pix no valor de {money(total)}<br/>referência: {reference}</div>
+<button type="button" className="whatsapp pix-whatsapp" onClick={sendToWhatsApp}>CLIQUE AQUI E ENVIE O COMPROVANTE DE PAGAMENTO</button>
+<p className="receipt-warning pix-warning">APÓS O PAGAMENTO VIA PIX, ENVIE O COMPROVANTE CLICANDO NO BOTÃO VERDE, QUE TE DIRECIONA PARA NOSSO NÚMERO DE WHATSAPP.</p>
+<small className="whatsapp-hint pix-whatsapp-hint">Ao abrir, anexe o comprovante manualmente pelo clipe.</small>
+</div> : <div className="payment-card cash-payment-card">
 <div>
 <p className="eyebrow accent">Pedido {reference}</p>
-{paymentMethod === "pix" ? <><h2>Pix<br/>
-<em>dinâmico.</em>
-</h2>
-<p>O pedido foi reservado com sucesso. Este QR Code Pix contém a chave para o pagamento. SE NÃO RECEBERMOS O PAGAMENTO E COMPROVANTE em 24h sua reserva será CANCELADA automaticamente e os itens do pedido voltarão para o menu.</p>
-  </> : <><h2>Pagamento<br/>
-<em>à vista.</em>
-</h2>
+<h2>Pagamento<br/><em>à vista.</em></h2>
 <p>Seu pedido foi registrado para pagamento à vista na retirada ou entrega. Troco para: {money(Number(changeFor))}.</p>
 <p className="cash-highlight">PAGUE E RECEBA SUA COMANDA COM OS COORDENADORES</p>
-  </>}
 <div className="amount-label">Total do pedido</div>
-<div className="amount">{money(total)}</div>{paymentMethod === "pix" && <div className="not-configured">Confirme seu pagamento para retirar seu pedido</div>}{paymentMethod === "cash" && <div className="not-configured">Você vai receber: {money(changeAmount)} de troco</div>}</div>
-<div className="qr-side">{paymentMethod === "pix" ? <>
-<div className="qr-callout">Copie e cole a chave ou escaneie o QR Code no aplicativo do seu banco</div>
-<img className="real-qr" src="/qrcode-pix.png" alt={`QR Code Pix do pedido ${reference}`} />
-<div className="pix-copy-box">
-<span className="pix-copy-label">Chave Pix para copiar</span>
-<code>{pixEmail}</code>
-<button className="copy-icon" onClick={() => navigator.clipboard.writeText(pixEmail)} aria-label="Copiar chave Pix" title="Copiar chave Pix">
-<span aria-hidden="true">▣</span>
-</button>
+<div className="amount">{money(total)}</div>
+<div className="not-configured">Você vai receber: {money(changeAmount)} de troco</div>
 </div>
-<p>Pix no valor de <strong>{money(total)}</strong>
-<br/>referência: {reference}</p>
-<button className="whatsapp" onClick={sendToWhatsApp}>CLIQUE AQUI E ENVIE O COMPROVANTE DE PAGAMENTO</button>
-<p className="receipt-warning">APÓS O PAGAMENTO VIA PIX, ENVIE O COMPROVANTE CLICANDO NO BOTÃO VERDE QUE TE DIRECIONA PARA NOSSO NÚMERO DE WHATSAPP</p>
-<small className="whatsapp-hint">Ao abrir, anexe o comprovante manualmente pelo clipe.</small>
-</> : <>
+<div className="qr-side">
 <p className="cash-note">Pagamento combinado à vista. Nenhum QR Code será gerado.</p>
 <button className="whatsapp" onClick={sendToWhatsApp}>CLIQUE AQUI E INFORME SEU PEDIDO NO WHATSAPP</button>
-</>}</div>
 </div>
+</div>}
 </section>}<footer>
 <span>Cantina Canaã do Brasil</span>
 <span>Pedido seguro e identificado.</span>
